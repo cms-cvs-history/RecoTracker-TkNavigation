@@ -7,6 +7,13 @@
 
 #include "FWCore/PluginManager/interface/PluginFactory.h" 
 
-typedef edmplugin::PluginFactory<NavigationSchool *(const GeometricSearchTracker* theTracker,const MagneticField* field)> NavigationSchoolFactory;
+//typedef edmplugin::PluginFactory<NavigationSchool *(const GeometricSearchTracker* theTracker,const MagneticField* field)> NavigationSchoolFactory;
+class NavigationSchoolFactory 
+   : public seal::PluginFactory<NavigationSchool *(const GeometricSearchTracker* theTracker,const MagneticField* field)> {
+public:
+  NavigationSchoolFactory();
+  virtual ~NavigationSchoolFactory();
+  static NavigationSchoolFactory * get();
+};
 
 #endif 

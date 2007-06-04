@@ -1,6 +1,7 @@
 #include "RecoTracker/TkNavigation/interface/TkLayerLess.h"
 #include "Utilities/General/interface/CMSexception.h"
-#include "RecoTracker/TkNavigation/interface/CosmicNavigationSchool.h"
+//#include "RecoTracker/TkNavigation/interface/CosmicNavigationSchool.h"
+#include "RecoTracker/TkNavigation/interface/FakeDetLayer.h"
 
 bool TkLayerLess::insideOutLess( const DetLayer* a, const DetLayer* b) const
 {
@@ -48,6 +49,7 @@ bool TkLayerLess::insideOutLess( const DetLayer* a, const DetLayer* b) const
 bool TkLayerLess::barrelForwardLess( const BarrelDetLayer* bla, 
 				     const ForwardDetLayer* flb) const
 {
+  if (theDir == outsideIn) return bla->surface().bounds().length()/2. > fabs( flb->position().z());
   return bla->surface().bounds().length()/2. < fabs( flb->position().z());
 }
 

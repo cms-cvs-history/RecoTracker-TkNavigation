@@ -7,7 +7,7 @@
  <use name=DataFormats/TrackingRecHit>
  <use name=DataFormats/DetId>
 </export>
-
+<flags SEAL_PLUGIN_NAME="RecoTrackerTkNavigation">
 <use name=Utilities/General>
 <use name=TrackingTools/GeomPropagators>
 <use name=TrackingTools/DetLayers>
