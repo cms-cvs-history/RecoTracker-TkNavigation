@@ -1,0 +1,5 @@
+es_module navigationSchoolESProducer = NavigationSchoolESProducer {
+	string ComponentName = "SimpleNavigationSchool"
+	#string ComponentName = "BeamHaloNavigationSchool"
+	#string ComponentName = "CosmicNavigationSchool"
+}
