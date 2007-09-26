@@ -1,0 +1,13 @@
+############ initialize magnetic field #########################
+include "MagneticField/Engine/data/volumeBasedMagneticField.cfi"
+ 
+############### initialize geometry #####################
+include "Geometry/CMSCommonData/data/cmsIdealGeometryXML.cfi"
+include "Geometry/TrackerGeometryBuilder/data/trackerGeometry.cfi"
+include "Geometry/TrackerNumberingBuilder/data/trackerNumberingGeometry.cfi"
+include "RecoTracker/GeometryESProducer/data/TrackerRecoGeometryESProducer.cfi"
+
+# navigationschools
+include "RecoTracker/TkNavigation/data/NavigationSchoolESProducer.cfi"
+include "RecoTracker/TkNavigation/data/BeamHaloNavigationSchoolESProducer.cfi"
+include "RecoTracker/TkNavigation/data/CosmicsNavigationSchoolESProducer.cfi"
