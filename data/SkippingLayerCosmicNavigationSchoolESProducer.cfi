@@ -1,0 +1,9 @@
+es_module skippingLayerCosmicNavigationSchoolESProducer = SkippingLayerCosmicNavigationSchoolESProducer {
+	string ComponentName = "NoPixelCosmicNavigationSchool"
+	bool noPXB = true
+	bool noPXF = true
+	bool noTIB = false
+	bool noTID = false
+	bool noTOB = false
+	bool noTEC = false
+}
