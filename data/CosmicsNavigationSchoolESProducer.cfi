@@ -1,3 +1,0 @@
-es_module cosmicsNavigationSchoolESProducer = NavigationSchoolESProducer {
-	string ComponentName = "CosmicNavigationSchool"
-}
