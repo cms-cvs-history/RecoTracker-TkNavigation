@@ -1,3 +1,0 @@
-es_module beamHaloNavigationSchoolESProducer = NavigationSchoolESProducer {
-	string ComponentName = "BeamHaloNavigationSchool"
-}
