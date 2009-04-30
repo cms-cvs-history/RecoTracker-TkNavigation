@@ -14,6 +14,13 @@
 #include "TrackingTools/DetLayers/src/DetLessZ.h"
 #include "TrackingTools/DetLayers/interface/NavigationSetter.h"
 
+#include "DataFormats/SiStripDetId/interface/TECDetId.h"
+#include "DataFormats/SiStripDetId/interface/TIBDetId.h"
+#include "DataFormats/SiStripDetId/interface/TIDDetId.h"
+#include "DataFormats/SiStripDetId/interface/TOBDetId.h"
+#include "DataFormats/SiPixelDetId/interface/PXBDetId.h"
+#include "DataFormats/SiPixelDetId/interface/PXFDetId.h"
+
 #include "DataFormats/GeometrySurface/interface/BoundCylinder.h"
 #include "DataFormats/GeometrySurface/interface/BoundDisk.h"
 
@@ -31,7 +38,15 @@ SimpleNavigationSchool::SimpleNavigationSchool(const GeometricSearchTracker* the
   theBarrelLength(0),theField(field), theTracker(theInputTracker)
 {
 
-  theAllDetLayersInSystem=&theInputTracker->allLayers();
+  //theAllDetLayersInSystem=&theInputTracker->allLayers();
+  std::vector<DetLayer*> * allLayers = new std::vector<DetLayer*>();
+  allLayers->reserve(theInputTracker->allLayers().size());
+  allLayers->clear();
+  vector<DetLayer*> alc = theTracker->allLayers();
+  for ( vector<DetLayer*>::iterator i = alc.begin(); i != alc.end(); i++) {
+    allLayers->push_back( (*i) );
+  }
+  theAllDetLayersInSystem = allLayers;
 
   // Get barrel layers
   vector<BarrelDetLayer*> blc = theTracker->barrelLayers(); 
@@ -58,6 +73,11 @@ SimpleNavigationSchool::SimpleNavigationSchool(const GeometricSearchTracker* the
   establishInverseRelations();
 }
 
+SimpleNavigationSchool::~SimpleNavigationSchool() {
+   // delete the vector containing all the detlayers
+   delete theAllDetLayersInSystem;
+}
+
 SimpleNavigationSchool::StateType 
 SimpleNavigationSchool::navigableLayers() const
 {
@@ -82,12 +102,32 @@ linkBarrelLayers( SymmetricLayerFinder& symFinder)
     FDLC leftFL;
     FDLC rightFL;
 
+    unsigned int layer_i = 0;
+    const std::vector<const GeomDet*>& bComponents = (*i)->basicComponents();
+    if (!bComponents.empty()) {
+       const GeomDet* tag = bComponents.front();
+       if ((*i)->subDetector() == GeomDetEnumerators::PixelBarrel)
+          layer_i = PXBDetId(tag->geographicalId()).layer();
+       else if ((*i)->subDetector() == GeomDetEnumerators::TOB)
+          layer_i = TOBDetId(tag->geographicalId()).layer();
+    }
+
     // always add next barrel layer first
     if ( i+1 != theBarrelLayers.end()) reachableBL.push_back(*(i+1));
  
-    // Add closest reachable forward layer (except for last BarrelLayer)
-    if (i != theBarrelLayers.end() - 1) {
-      linkNextForwardLayer( *i, rightFL);
+    // for outer stack layers make links to all TEC wheels
+    // need to also to not make links from first stack to TEC wheels
+    if ( (*i)->subDetector() == GeomDetEnumerators::PixelBarrel && layer_i == 6) {
+        linkAllForwardLayer( *i, rightFL);
+    } else if ( (*i)->subDetector() == GeomDetEnumerators::PixelBarrel && layer_i == 5) {
+        // do not link any forward layer
+    } else if ( (*i)->subDetector() == GeomDetEnumerators::PixelBarrel && layer_i == 4) {
+        // do not link any forward layer
+    } else {
+      // Add closest reachable forward layer (except for last BarrelLayer)
+      if (i != theBarrelLayers.end() - 1) {
+        linkNextForwardLayer( *i, rightFL);
+      }   
     }
 
     // Add next BarrelLayer with length larger than the current BL
@@ -114,6 +154,19 @@ void SimpleNavigationSchool::linkNextForwardLayer( BarrelDetLayer* bl,
 	 radius < (**fli).specificSurface().outerRadius()) {
       rightFL.push_back( *fli);
       return;
+    }
+  }
+}
+
+void SimpleNavigationSchool::linkAllForwardLayer( BarrelDetLayer* bl,
+                                                   FDLC& rightFL)
+{
+  // find all forward layers with larger outer radius
+  float radius = bl->specificSurface().radius();
+  for ( FDLI fli = theRightLayers.begin();
+        fli != theRightLayers.end(); fli++) {
+    if ( radius < (**fli).specificSurface().outerRadius()) {
+       rightFL.push_back( *fli);
     }
   }
 }
