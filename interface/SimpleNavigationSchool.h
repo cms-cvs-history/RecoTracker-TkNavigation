@@ -23,7 +23,8 @@ public:
   SimpleNavigationSchool() : theField(0),theTracker(0){};
   SimpleNavigationSchool(const GeometricSearchTracker* theTracker,
 			 const MagneticField* field);
-  ~SimpleNavigationSchool(){cleanMemory();}
+  //~SimpleNavigationSchool(){cleanMemory();}
+  ~SimpleNavigationSchool();
 
   // from base class
   virtual StateType navigableLayers() const;
@@ -54,6 +55,7 @@ protected:
   virtual void linkForwardLayers( SymmetricLayerFinder& symFinder);
 
   virtual void linkNextForwardLayer( BarrelDetLayer*, FDLC&);
+  virtual void linkAllForwardLayer( BarrelDetLayer*, FDLC&);
 
   virtual void linkNextLargerLayer( BDLI, BDLI, BDLC&);
 
